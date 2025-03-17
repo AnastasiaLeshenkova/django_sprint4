@@ -22,4 +22,3 @@ def handler500(request) -> HttpResponse:
 
 def csrf_failure(request, reason='') -> HttpResponse:
     return render(request, 'pages/403csrf.html', status=403)
-

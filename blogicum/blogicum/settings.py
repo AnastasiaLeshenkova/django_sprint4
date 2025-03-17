@@ -27,7 +27,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = [
     'localhost',
-    '127.0.0.1',]
+    '127.0.0.1', ]
 
 TEMPLATES_DIR = BASE_DIR / 'templates'
 
@@ -60,7 +60,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'debug_toolbar.middleware.DebugToolbarMiddleware',
-]   
+]
 
 ROOT_URLCONF = 'blogicum.urls'
 

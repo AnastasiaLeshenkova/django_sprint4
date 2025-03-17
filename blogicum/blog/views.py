@@ -19,13 +19,13 @@ pag_pages: int = 10
 
 class ProfileLoginView(LoginView):
     def get_success_url(self) -> HttpResponse:
-        '''Получаем адрес.'''
+        """Получаем адрес."""
         return reverse('blog:profile',
                        args=(self.request.user.get_username(),))
 
 
 def edit_profile(request, name) -> HttpResponse:
-    '''Редактирование профиля.'''
+    """Редактирование профиля."""
     templates = 'blog/user.html'
     instance = get_object_or_404(User, username=name)
     if instance.username != request.user.username:
@@ -38,7 +38,7 @@ def edit_profile(request, name) -> HttpResponse:
 
 
 def info_profile(request, name) -> HttpResponse:
-    '''Информация профиля.'''
+    """Информация профиля."""
     templates = 'blog/profile.html'
     user = get_object_or_404(User, username=name)
     profile_post = user.posts.all()
@@ -65,7 +65,7 @@ class PostListView(ListView):
 
 
 def category_posts(request, category_slug) -> HttpResponse:
-    '''Отображение категории постов.'''
+    """Отображение категории постов."""
     templates = 'blog/category.html'
     category = get_object_or_404(
         Category,
@@ -92,12 +92,12 @@ class PostCreateView(LoginRequiredMixin, CreateView):
     template_name = 'blog/create.html'
 
     def form_valid(self, form) -> HttpResponse:
-        '''Валидность формы.'''
+        """Валидность формы."""
         form.instance.author = self.request.user
         return super().form_valid(form)
 
     def get_success_url(self) -> HttpResponse:
-        '''Получаем адрес.'''
+        """Получаем адрес."""
         if self.request.user.is_authenticated:
             return reverse('blog:profile',
                            args=(self.request.user.get_username(),))
@@ -111,7 +111,7 @@ class PostUpdateView(LoginRequiredMixin, UpdateView):
     template_name = 'blog/create.html'
 
     def dispatch(self, request, *args, **kwargs) -> HttpResponse:
-        '''Отправка условий.'''
+        """Отправка условий."""
         self.post_id = kwargs['pk']
         instance = get_object_or_404(Post, pk=self.post_id)
         if instance.author != request.user:
@@ -119,7 +119,7 @@ class PostUpdateView(LoginRequiredMixin, UpdateView):
         return super().dispatch(request, *args, **kwargs)
 
     def get_success_url(self) -> HttpResponse:
-        '''Получаем адрес.'''
+        """Получаем адрес."""
         return reverse('blog:post_detail', args=[str(self.post_id)])
 
 
@@ -129,7 +129,7 @@ class PostDeleteView(LoginRequiredMixin, DeleteView):
     template_name = 'blog/create.html'
 
     def dispatch(self, request, *args, **kwargs) -> HttpResponse:
-        '''Отправка условий.'''
+        """Отправка условий."""
         instance = get_object_or_404(Post, pk=kwargs['pk'])
         if instance.author != request.user:
             return redirect('blog:post_detail', pk=kwargs['pk'])
@@ -141,14 +141,14 @@ class PostDetailView(DetailView):
     template_name = 'blog/detail.html'
 
     def dispatch(self, request, *args, **kwargs) -> HttpResponse:
-        '''Отправка условий.'''
+        """Отправка условий."""
         instance = get_object_or_404(Post, pk=kwargs['pk'])
         if not instance.is_published and instance.author != request.user:
             raise Http404("")
         return super().dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs) -> HttpResponse:
-        '''получем контекстные данные.'''
+        """получем контекстные данные."""
         context = super().get_context_data(**kwargs)
         context['form'] = CommentForm()
         context['comments'] = (
@@ -159,7 +159,7 @@ class PostDetailView(DetailView):
 
 @login_required
 def add_comment(request, pk) -> HttpResponse:
-    '''Добавление комментария.'''
+    """Добавление комментария."""
     post = get_object_or_404(Post, pk=pk)
     form = CommentForm(request.POST)
     if form.is_valid():
@@ -172,7 +172,7 @@ def add_comment(request, pk) -> HttpResponse:
 
 @login_required
 def edit_comment(request, comment_id, post_id) -> HttpResponse:
-    '''Редактирование комментария.'''
+    """Редактирование комментария."""
     instance = get_object_or_404(Comment, id=comment_id, post_id=post_id)
     if instance.author != request.user:
         return redirect('login')
@@ -189,7 +189,7 @@ def edit_comment(request, comment_id, post_id) -> HttpResponse:
 
 @login_required
 def delete_comment(request, comment_id, post_id) -> HttpResponse:
-    '''Удаление комментария.'''
+    """Удаление комментария."""
     instance = get_object_or_404(Comment, id=comment_id, post_id=post_id)
     if instance.author != request.user:
         return redirect('login')
@@ -200,4 +200,3 @@ def delete_comment(request, comment_id, post_id) -> HttpResponse:
         instance.delete()
         return redirect('blog:post_detail', pk=post_id)
     return render(request, 'blog/comment.html', context)
-
